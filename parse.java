@@ -17,9 +17,9 @@ public class parse {
 	
 	//Regex patterns
 	static String remove_top = "\\{(.|\n)*\\[";
-	static String get_article = "\\{(.)+?\\},";
+	static String get_article = "\\{(.)+?\\}";
 	
-	static String get_body = "\\\"articleBody\\\": \\\"(.+?)\\\"";
+	static String get_body = "\\\"articleBody\\\": \\\"(.+?)\\\"(\\n|\\r)";
 	static String get_title_body = "\\\"title\\\": \\\"(.+?)\\\"," + "(.+?)" + get_body;
 	
 	static String special_characters = "([\\p{Punct}|(0-9)])";
@@ -109,17 +109,19 @@ public class parse {
 		while (match.find()) {
 			String negative = match.group(1);
 			onNegativeOccurence(frequencies, negative);
+			
 		}
 		
+		String negativesRemoved = article.replaceAll("not [a-z]+ ", "");
+		
 		//Convert into individual words
-		String[] words = article.split(" ");
+		String[] words = negativesRemoved.split(" ");
 		
 		//Remove common words
 		for (String word : words) {
 			//System.out.print(word + "\n");
 			
 			onPositiveOccurence(frequencies, word); 
-			//TODO :: Still counts not x as a positive occurence aswell
 		}
 		
 		//Remove common words
@@ -154,6 +156,7 @@ public class parse {
 	
 	private static void printFrequencies(HashMap<String, IntPair> freq) {
 		for (Entry<String, IntPair> t : freq.entrySet()){
+			if (t.getValue().right != 0)
 			System.out.print(t.getKey() + " Positive: " + t.getValue().left + " Negative: " + t.getValue().right + "\n");
 		}
 	}
