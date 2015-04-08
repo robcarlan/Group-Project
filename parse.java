@@ -17,9 +17,9 @@ public class parse {
 	
 	//Regex patterns
 	static String remove_top = "\\{(.|\n)*\\[";
-	static String get_article = "\\{(.)+?\\},";
+	static String get_article = "\\{(.)+?\\}";
 	
-	static String get_body = "\\\"articleBody\\\": \\\"(.+?)\\\"";
+	static String get_body = "\\\"articleBody\\\": \\\"(.+?)\\\"(\\n|\\r)";
 	static String get_title_body = "\\\"title\\\": \\\"(.+?)\\\"," + "(.+?)" + get_body;
 	
 	static String special_characters = "([\\p{Punct}|(0-9)])";
