@@ -27,11 +27,15 @@ public class parse {
 	
 	static boolean printParsed = false;
 	static boolean printUnparsed = false;
-	static boolean printFreq = true;
+	static boolean printFreq = false;
 
+	public static ArrayList<HashMap<String, IntPair>> parseText(String fileText) {
+		ArrayList<String> articleText = getAllArticles(fileText);
+		return parseAll(articleText);
+	}
 	
 	//Returns bare text of a list of articles
-	public static ArrayList<String> getAllArticles(String input) {
+	private static ArrayList<String> getAllArticles(String input) {
 		//Get rid of the enclosing JSON, retrieving the list of articles
 		int startTrim = input.indexOf("[");
 		int endTrim = input.lastIndexOf("]");
@@ -57,7 +61,7 @@ public class parse {
 	}
 	
 	//input of the format { title , url , body }, returns title concatenated with body
-	public static String getArticleText(String input) {
+	private static String getArticleText(String input) {
 		//Take "articleBody" and format it
 		Matcher matcher;
 		Pattern title = Pattern.compile(get_title_body, Pattern.DOTALL);
@@ -75,8 +79,19 @@ public class parse {
 		return article_title + " " + article_body;
 	}
 	
+	//Parses every article in the array
+	private static ArrayList<HashMap<String, IntPair>> parseAll(ArrayList<String> formattedArticles) {
+		ArrayList<HashMap<String,IntPair>> parsed = new ArrayList<HashMap<String,IntPair>>();
+		
+		for(String str : formattedArticles){
+			parsed.add(parseArticle(str));
+		}
+		
+		return parsed;
+	}
+	
 	//Takes body and title, returns parsed version
-	public static HashMap<String, IntPair> parseArticle(String article) {
+	private static HashMap<String, IntPair> parseArticle(String article) {
 		//We need to : remove punctuation, digits etc.#
 		
 		if (printUnparsed) System.out.print(article + "\n");
@@ -141,17 +156,6 @@ public class parse {
 		for (Entry<String, IntPair> t : freq.entrySet()){
 			System.out.print(t.getKey() + " Positive: " + t.getValue().left + " Negative: " + t.getValue().right + "\n");
 		}
-	}
-	
-	//Parses every article in the array
-	public static ArrayList<HashMap<String, IntPair>> parseAll(ArrayList<String> formattedArticles) {
-		ArrayList<HashMap<String,IntPair>> parsed = new ArrayList<HashMap<String,IntPair>>();
-		
-		for(String str : formattedArticles){
-			parsed.add(parseArticle(str));
-		}
-		
-		return parsed;
 	}
 	
 	public static void main(String[] args){
