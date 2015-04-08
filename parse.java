@@ -156,7 +156,6 @@ public class parse {
 	
 	private static void printFrequencies(HashMap<String, IntPair> freq) {
 		for (Entry<String, IntPair> t : freq.entrySet()){
-			if (t.getValue().right != 0)
 			System.out.print(t.getKey() + " Positive: " + t.getValue().left + " Negative: " + t.getValue().right + "\n");
 		}
 	}
