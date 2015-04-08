@@ -103,7 +103,8 @@ public class parse {
 		for (String word : words) {
 			//System.out.print(word + "\n");
 			
-			onPositiveOccurence(frequencies, word);
+			onPositiveOccurence(frequencies, word); 
+			//TODO :: Still counts not x as a positive occurence aswell
 		}
 		
 		//Remove common words
