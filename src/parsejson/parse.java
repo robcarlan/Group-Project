@@ -22,7 +22,7 @@ public class parse {
 	static boolean printFreq = true;
 	
 	public static ArrayList<ParsedArticle> parseAll(String fName) {
-		StrippedArticleStream articles = readObjectFromFile(StrippedArticleStream.class, "C:\\test.txt");
+		StrippedArticleStream articles = readObjectFromFile(StrippedArticleStream.class, fName);
 		ArrayList<ParsedArticle> parsedArticles = new ArrayList<ParsedArticle>();
 		
 		for (int articleItr = 0; articleItr < articles.numArticles; articleItr++) {
@@ -34,47 +34,55 @@ public class parse {
 			
 			if (printUnparsed) System.out.print(articleText);
 			
-			articleText = articleText.replaceAll("'", ""); //Special case to replace apostrophes with no space
-			articleText = articleText.replaceAll(special_characters, " "); //Delete any non alphabetical character
-			articleText = articleText.replaceAll("( )+", " "); //Deleting a number can lead to multiple spaces, so remove those to ensure one space between words
-			//Convert to lower case
-			articleText = articleText.toLowerCase();
-			
-			parsed.originalArticle = articleText;
-			
-			//Look for nots
-			HashMap<String, IntPair> frequencies = new HashMap<String, IntPair>();
-			
-			Pattern not_finder = Pattern.compile(not_find);
-			Matcher match = not_finder.matcher(articleText);
-			while (match.find()) {
-				String negative = match.group(1);
-				onNegativeOccurence(frequencies, negative);
-			}
-			
-			String negativesRemoved = articleText.replaceAll("not [a-z]+ ", "");
-			
-			//Convert into individual words
-			String[] words = negativesRemoved.split(" ");
-			
-			//Remove common words
-			for (String word : words) {
-				//System.out.print(word + "\n");
-				
-				onPositiveOccurence(frequencies, word); 
-			}
-			
-			//Remove common words
-			
-			if (printParsed) System.out.print(articleText + "\n");
-			
-			if (printFreq) printFrequencies(frequencies);
-			parsed.words = frequencies;
+			parsed.sentiment = article.sentiment;
 			
 			parsedArticles.add(parsed);
 		}
 		
 		return parsedArticles;
+	}
+	
+	public static ParsedArticle parseArticle(String articleText){
+		ParsedArticle parsed = new ParsedArticle();
+		
+		articleText = articleText.replaceAll("'", ""); //Special case to replace apostrophes with no space
+		articleText = articleText.replaceAll(special_characters, " "); //Delete any non alphabetical character
+		articleText = articleText.replaceAll("( )+", " "); //Deleting a number can lead to multiple spaces, so remove those to ensure one space between words
+		//Convert to lower case
+		articleText = articleText.toLowerCase();
+		
+		parsed.originalArticle = articleText;
+		
+		//Look for nots
+		HashMap<String, IntPair> frequencies = new HashMap<String, IntPair>();
+		
+		Pattern not_finder = Pattern.compile(not_find);
+		Matcher match = not_finder.matcher(articleText);
+		while (match.find()) {
+			String negative = match.group(1);
+			onNegativeOccurence(frequencies, negative);
+		}
+		
+		String negativesRemoved = articleText.replaceAll("not [a-z]+ ", "");
+		
+		//Convert into individual words
+		String[] words = negativesRemoved.split(" ");
+		
+		//Remove common words
+		for (String word : words) {
+			//System.out.print(word + "\n");
+			
+			onPositiveOccurence(frequencies, word); 
+		}
+		
+		//Remove common words
+		
+		if (printParsed) System.out.print(articleText + "\n");
+		
+		if (printFreq) printFrequencies(frequencies);
+		parsed.words = frequencies;
+		
+		return parsed;
 	}
 
 	private static void printFrequencies(HashMap<String, IntPair> freq) {
@@ -170,9 +178,5 @@ public class parse {
 	    final String articleBody;
 	    final String sentiment;
 	
-	}
-	
-	public static void main(String args[]){
-		parseAll("");
 	}
 }
