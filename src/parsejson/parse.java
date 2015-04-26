@@ -26,15 +26,17 @@ public class parse {
 		ArrayList<ParsedArticle> parsedArticles = new ArrayList<ParsedArticle>();
 		
 		for (int articleItr = 0; articleItr < articles.numArticles; articleItr++) {
-			ParsedArticle parsed = new ParsedArticle();
+			
 			
 			StrippedArticle article = articles.articles[articleItr];
 			
 			String articleText = article.title + " " + article.articleBody;
 			
 			if (printUnparsed) System.out.print(articleText);
-			
-			parsed.sentiment = article.sentiment;
+            
+            ParsedArticle parsed = parseArticle(articleText);
+            
+            parsed.sentiment = article.sentiment;
 			
 			parsedArticles.add(parsed);
 		}
